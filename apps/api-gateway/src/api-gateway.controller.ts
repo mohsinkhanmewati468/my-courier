@@ -1,4 +1,5 @@
-import { Controller, Get, Inject } from '@nestjs/common';
+import { CreateUserDto } from '@app/common';
+import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 
@@ -66,5 +67,12 @@ export class ApiGatewayController {
         job,
       },
     };
+  }
+
+  @Post('signup')
+  async signup(@Body() createUserDto: CreateUserDto) {
+    return await firstValueFrom(
+      this.identityClient.send('signup', createUserDto),
+    );
   }
 }
