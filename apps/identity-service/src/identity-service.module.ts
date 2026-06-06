@@ -4,6 +4,7 @@ import { IdentityServiceService } from './identity-service.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { User } from './users/entities/user.entity';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -19,6 +20,11 @@ import { User } from './users/entities/user.entity';
       synchronize: true,
     }),
     TypeOrmModule.forFeature([User]),
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_ACCESS_SECRET,
+      signOptions: { expiresIn: '10m' },
+    }),
   ],
   controllers: [IdentityServiceController],
   providers: [IdentityServiceService],

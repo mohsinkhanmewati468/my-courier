@@ -1,10 +1,11 @@
 import {
   IsEmail,
-  IsIn,
+  IsEnum,
   IsNotEmpty,
   IsString,
   MinLength,
 } from 'class-validator';
+import { Role } from '../types/interfaces/signup-response.interface';
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -20,6 +21,6 @@ export class CreateUserDto {
   @MinLength(6)
   password!: string;
 
-  @IsIn(['user', 'driver'])
-  role!: string;
+  @IsEnum(Role)
+  role!: Role;
 }
