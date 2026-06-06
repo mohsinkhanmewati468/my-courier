@@ -79,20 +79,19 @@ export class IdentityServiceService {
   async login(loginDto: LoginDto): Promise<ILoginResponse> {
     const { email, password } = loginDto;
     const user = await this.userRepository.findOneBy({ email });
-    if (!user) {
+    const invalidCredentials = () => {
       throw new RpcException({
         success: false,
         statusCode: HttpStatus.UNAUTHORIZED,
         message: 'Invalid credentials',
       });
+    };
+    if (!user) {
+      return invalidCredentials();
     }
     const isMatch = await this.comparePassword(password, user.password);
     if (!isMatch) {
-      throw new RpcException({
-        success: false,
-        statusCode: HttpStatus.UNAUTHORIZED,
-        message: 'Invalid credentials',
-      });
+      return invalidCredentials();
     }
     const tokens = this.generateTokens({ id: user.id, role: user.role });
     return {
